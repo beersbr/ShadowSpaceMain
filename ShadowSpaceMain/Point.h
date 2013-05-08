@@ -9,22 +9,24 @@ public:
 	~Point(void);
 
 	Point operator+(const Point &p) const;
-	Point operator+(const double oper) const;
+	Point operator+(const double scalar) const;
 	Point operator-(const Point &p) const;
-	Point operator-(const double oper) const;
+	Point operator-(const double scalar) const;
 	Point operator*(const Point &p) const;
-	Point operator*(const double oper) const;
-	Point operator/(const double oper) const;
+	Point operator*(const double scalar) const;
+	Point operator/(const Point &p) const;
+	Point operator/(const double scalar) const;
 
 	Point& operator=(const Point &p);
 
 	Point& operator+=(const Point &p);
-	Point& operator+=(const double oper);
+	Point& operator+=(const double scalar);
 	Point& operator-=(const Point &p);
-	Point& operator-=(const double oper);
+	Point& operator-=(const double scalar);
 	Point& operator*=(const Point &p);
-	Point& operator*=(const double oper);
-	Point& operator/=(const double oper);
+	Point& operator*=(const double scalar);
+	Point& operator/=(const Point &p);
+	Point& operator/=(const double scalar);
 
 	bool operator==(const Point &p) const;
 

@@ -28,9 +28,43 @@ Point Point::operator+(const Point &p) const
 	return (new_point += p);
 }
 
-Point Point::operator+(const double oper) const
+Point Point::operator+(const double scalar) const
 {
 	Point new_point = (*this);
-	return (new_point += oper);
+	return (new_point += scalar);
 }
 
+Point Point::operator-(const Point&p) const
+{
+	Point new_point = (*this);
+	return (new_point -= p);
+}
+
+Point Point::operator-(const double scalar) const
+{
+	Point new_point = (*this);
+	return (new_point -= scalar);
+}
+
+Point Point::operator*(const Point& p) const
+{
+	Point new_point = (*this);
+	return (new_point *= p);
+}
+
+Point Point::operator*(const double scalar) const
+{
+	Point new_point = (*this);
+	return (new_point *= scalar);
+}
+
+Point Point::operator/(const Point& p) const
+{
+	Point new_point = (*this);
+	return (new_point /= p);
+}
+
+Point Point::operator/(const double scalar) const
+{
+
+}
