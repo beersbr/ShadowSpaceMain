@@ -1,14 +1,14 @@
 #pragma once
 
+#include "Point.h"
+
 class Entity
 {
 public:
 	Entity(void);
 	Entity(Entity &entity);
 
-	double center_x();
-	double center_y();
-	Point<double> center_pt();
+	Point center_pt();
 
 	virtual ~Entity(void);
 
@@ -17,7 +17,5 @@ public:
 	double accel_x, accel_y;
 	int width, height;
 
-private:
-	double center_x, center_y;
 };
 

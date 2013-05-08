@@ -52,7 +52,6 @@ int main(int argc, char** argv)
 				//update
 				if(input->isKeyDown(ALLEGRO_KEY_ESCAPE)) gamestate = QUITTING;
 
-				if(input->
 
 
 				break;
