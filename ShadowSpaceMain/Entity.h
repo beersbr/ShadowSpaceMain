@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Point.h"
+#include "Vector.h"
 
 class Entity
 {
@@ -13,8 +14,8 @@ public:
 	virtual ~Entity(void);
 
 public:
-	double x, y;
-	double accel_x, accel_y;
+	Point position;
+	Vector accel;
 	int width, height;
 
 };

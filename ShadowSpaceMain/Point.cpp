@@ -11,7 +11,7 @@ Point::Point(double X, double Y)
 	y = Y;
 }
 
-Point::Point(Point &pt)
+Point::Point(const Point &pt)
 {
 	x = pt.x;
 	y = pt.y;
@@ -21,3 +21,16 @@ Point::~Point(void)
 {
 	x = y = 0;
 }
+
+Point Point::operator+(const Point &p) const
+{
+	Point new_point = (*this);
+	return (new_point += p);
+}
+
+Point Point::operator+(const double oper) const
+{
+	Point new_point = (*this);
+	return (new_point += oper);
+}
+
