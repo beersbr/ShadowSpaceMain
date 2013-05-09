@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+
 #include "Point.h"
 
 class Vector : Point

@@ -9,3 +9,14 @@ Particle::Particle(void)
 Particle::~Particle(void)
 {
 }
+
+int Particle::update(double timestamp)
+{
+	position += *(Point*)&accel;
+	return 0;
+}
+
+int Particle::draw(void)
+{
+	return 0;
+}

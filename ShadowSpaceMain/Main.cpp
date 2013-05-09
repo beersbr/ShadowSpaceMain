@@ -1,5 +1,6 @@
 #include <allegro5\allegro5.h>
 #include "InputHandler.h"
+#include "Particle.h"
 
 enum {PLAYING, QUITTING, CLEANUP, LOADING};
 

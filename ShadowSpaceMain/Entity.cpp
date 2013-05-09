@@ -3,14 +3,15 @@
 
 Entity::Entity(void)
 {
-	x, y, accel_x, accel_y = 0;
+	position = Point();
+	accel = Vector();
 	width = height = 0;
 }
 
 Entity::Entity(Entity &entity)
 {
-	x = entity.x;
-	y = entity.y;
+	position = entity.position;
+	accel = entity.accel;
 	width = entity.width;
 	height = entity.height;
 }
