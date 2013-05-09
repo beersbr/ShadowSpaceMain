@@ -8,6 +8,8 @@ public:
 	Point(double X, double Y);
 	~Point(void);
 
+	Point& operator=(const Point &p);
+
 	Point operator+(const Point &p) const;
 	Point operator+(const double scalar) const;
 	Point operator-(const Point &p) const;
@@ -16,8 +18,6 @@ public:
 	Point operator*(const double scalar) const;
 	Point operator/(const Point &p) const;
 	Point operator/(const double scalar) const;
-
-	Point& operator=(const Point &p);
 
 	Point& operator+=(const Point &p);
 	Point& operator+=(const double scalar);
