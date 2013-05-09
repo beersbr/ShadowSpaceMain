@@ -13,7 +13,18 @@ Vector::~Vector(void)
 {
 }
 
-double Vector::Length()
+double Vector::operator*(const Vector &v) const
+{
+	return (x*v.x + y*v.y);
+}
+
+double Vector::cos_angle(const Vector &v) const
+{
+	double cos_omega = ((*this) * v)/((*this).length() * v.length());
+	return cos_omega;
+}
+
+double Vector::length() const
 {
 	return sqrt(x*x + y*y);
 }
