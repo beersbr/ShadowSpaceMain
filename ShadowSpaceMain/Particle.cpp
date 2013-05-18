@@ -18,5 +18,6 @@ int Particle::update(double timestamp)
 
 int Particle::draw(void)
 {
+	al_draw_filled_rectangle(position.x, position.y, position.x+1, position.y+1, al_map_rgb(144, 144, 255));
 	return 0;
 }

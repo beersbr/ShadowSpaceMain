@@ -61,7 +61,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>allegro.lib;allegro_main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>allegro.lib;allegro_main.lib;allegro_audio.lib;allegro_acodec.lib;allegro_color.lib;allegro_dialog.lib;allegro_font.lib;allegro_image.lib;allegro_memfile.lib;allegro_primitives.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>copy $(ProjectDir)..\ThirdParty\Allegro5\lib\*.dll $(OutDir)</Command>

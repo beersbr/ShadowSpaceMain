@@ -2,10 +2,11 @@
 
 #include <list>
 #include <allegro5\allegro.h>
+#include <allegro5\allegro_primitives.h>
 #include "Entity.h"
 #include "IGameObject.h"
 
-class Particle : Entity, IGameObject
+class Particle : public Entity, IGameObject
 {
 public:
 	Particle(void);

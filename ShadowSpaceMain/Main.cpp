@@ -1,4 +1,5 @@
 #include <allegro5\allegro5.h>
+#include <allegro5\allegro_primitives.h>
 #include "InputHandler.h"
 #include "Particle.h"
 
@@ -7,6 +8,7 @@ enum {PLAYING, QUITTING, CLEANUP, LOADING};
 int main(int argc, char** argv)
 {
 	if(!al_init()) return false;
+	if(!al_init_primitives_addon()) return false;
 	if(!al_install_keyboard()) return false;
 
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
@@ -31,6 +33,12 @@ int main(int argc, char** argv)
 	double game_time = 0.0f;
 	double offset = al_get_time();
 
+	Particle *p = new Particle();
+	p->accel.x = 1;
+	p->position.x = 0;
+	p->position.y = 400;
+
+
 	while(gamestate == PLAYING)
 	{
 		ALLEGRO_EVENT evt;
@@ -53,19 +61,15 @@ int main(int argc, char** argv)
 				//update
 				if(input->isKeyDown(ALLEGRO_KEY_ESCAPE)) gamestate = QUITTING;
 
-
-
 				break;
 			}
 		}
 
 		double interpolation = (al_get_time() - offset - game_time) / dt;
-		
-		//display
-
-		
 
 		al_clear_to_color(al_map_rgb(0, 0, 0));
+		//p->update(0.016);
+		
 		al_flip_display();
 
 	}

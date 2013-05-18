@@ -4,7 +4,7 @@
 
 #include "Point.h"
 
-class Vector : Point
+class Vector : public Point
 {
 public:
 	Vector(void);
