@@ -14,7 +14,7 @@
 
 enum {PLAYING, QUITTING, CLEANUP, LOADING};
 
-#define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
+#define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_SPECULAR)
 
 struct CUSTOMVERTEX
 {
@@ -75,9 +75,9 @@ int main(int argc, char** argv)
 
 	CUSTOMVERTEX OurVertices[] =
 	{
-		{ 3.0f, -3.0f, 0.0f, D3DCOLOR_XRGB(0, 0, 255), },
-        { 0.0f, 3.0f, 0.0f, D3DCOLOR_XRGB(0, 255, 0), },
-        { -3.0f, -3.0f, 0.0f, D3DCOLOR_XRGB(255, 0, 0), },
+		{ 3.0f, -3.0f, 0.0f, D3DCOLOR_XRGB(10, 10, 255), D3DCOLOR_ARGB(255, 0, 0, 255)},
+        { 0.0f, 3.0f, 0.0f, D3DCOLOR_XRGB(10, 10, 255), D3DCOLOR_ARGB(255, 0, 0, 255)},
+        { -3.0f, -3.0f, 0.0f, D3DCOLOR_XRGB(10, 10, 255), D3DCOLOR_ARGB(255, 0, 0, 255)},
 	};
 
 	LPDIRECT3DVERTEXBUFFER9 v_buffer;
