@@ -92,6 +92,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="HighResTimer.h" />
     <ClInclude Include="IGameObject.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Particle.h" />
@@ -102,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="HighResTimer.cpp" />
     <ClCompile Include="IGameObject.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />

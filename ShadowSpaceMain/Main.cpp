@@ -1,5 +1,6 @@
 #include <allegro5\allegro5.h>
 #include <allegro5\allegro_primitives.h>
+#include "HighResTimer.h"
 #include "InputHandler.h"
 #include "Particle.h"
 
@@ -11,13 +12,16 @@ int main(int argc, char** argv)
 	if(!al_init_primitives_addon()) return false;
 	if(!al_install_keyboard()) return false;
 
+	HighResTimer hrtimer;
+	if(!hrtimer.startTimer()) return false;
+
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
 
 	ALLEGRO_DISPLAY *display = al_create_display(1280, 800);
 	if(!display) return false;
 
 	int gamestate = PLAYING;
-	ALLEGRO_TIMER *timer = al_create_timer(1.0/60);
+	ALLEGRO_TIMER *timer = al_create_timer(1.0f/60.0f);
 	al_start_timer(timer);
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -26,21 +30,20 @@ int main(int argc, char** argv)
 
 	InputHandler* input = InputHandler::Instance();
 
-	const double TICKS_PER_SECOND = 45;
-	const double dt = 1.0f/60.0f;
-	const double MAX_FRAMESKIP = 5;
-
-	double game_time = 0.0f;
-	double offset = al_get_time();
-
 	Particle *p = new Particle();
 	p->accel.x = 1;
 	p->position.x = 0;
 	p->position.y = 400;
 
+	double start_time = hrtimer.getMilliseconds();
+	double elapsed_time = 0.0f;
+	double last_time = 0.0f;
 
 	while(gamestate == PLAYING)
 	{
+		last_time = elapsed_time;
+		elapsed_time = hrtimer.getMilliseconds();
+
 		ALLEGRO_EVENT evt;
 		while(al_get_next_event(event_queue, &evt))
 		{
@@ -56,18 +59,12 @@ int main(int argc, char** argv)
 				gamestate = QUITTING;
 				break;
 			case ALLEGRO_EVENT_TIMER:
-				game_time = evt.timer.count * dt;
-
-				//update
-				if(input->isKeyDown(ALLEGRO_KEY_ESCAPE)) gamestate = QUITTING;
-
 				break;
 			}
 		}
 
-		double interpolation = (al_get_time() - offset - game_time) / dt;
-
 		al_clear_to_color(al_map_rgb(0, 0, 0));
+
 		//p->update(0.016);
 		
 		al_flip_display();
