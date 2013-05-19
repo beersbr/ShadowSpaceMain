@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\ThirdParty\Allegro5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\ThirdParty\Allegro5\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\ThirdParty\Allegro5\include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\ThirdParty\Allegro5\lib\;$(DXSDK_DIR)Lib\x86\;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>Link</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -61,7 +61,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>allegro.lib;allegro_main.lib;allegro_audio.lib;allegro_acodec.lib;allegro_ttf.lib;allegro_color.lib;allegro_dialog.lib;allegro_font.lib;allegro_image.lib;allegro_memfile.lib;allegro_primitives.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>allegro.lib;allegro_main.lib;allegro_audio.lib;allegro_acodec.lib;allegro_ttf.lib;allegro_color.lib;allegro_dialog.lib;allegro_font.lib;allegro_image.lib;allegro_memfile.lib;allegro_primitives.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>copy $(ProjectDir)..\ThirdParty\Allegro5\lib\*.dll $(OutDir)</Command>
