@@ -12,7 +12,7 @@ Particle::~Particle(void)
 
 int Particle::update(double timestamp)
 {
-	position += *(Point*)&accel;
+	position += ((Point)accel*timestamp);
 	return 0;
 }
 
