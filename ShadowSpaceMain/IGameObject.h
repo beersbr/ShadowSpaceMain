@@ -3,6 +3,13 @@
 #include <list>
 #include <allegro5\allegro.h>
 
+
+#include <windowsx.h>
+#include <Windows.h>
+#include <d3dx9.h>
+#include <d3d9.h>
+#include <d3d.h>
+
 class IGameObject
 {
 public:
@@ -10,7 +17,7 @@ public:
 	virtual ~IGameObject(void);
 
 	virtual int update(double timestamp) = 0;
-	virtual int draw(void) = 0;
+	virtual int draw(LPDIRECT3DDEVICE9 dev) = 0;
 
 	int instance_id() const;
 	int object_type() const;

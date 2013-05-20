@@ -131,8 +131,8 @@ int main(int argc, char** argv)
 
 		//fps = frames/(game_time);
 
-		/*al_clear_to_color(al_map_rgb(0, 0, 0));*/
-		device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 40, 100), 1.0f, 0);
+		al_clear_to_color(al_map_rgb(0, 0, 0));
+		//device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 40, 100), 1.0f, 0);
 		//device->BeginScene();
 
 		device->SetFVF(CUSTOMFVF);
@@ -163,7 +163,7 @@ int main(int argc, char** argv)
 		
 		device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
 
-		p->draw();
+		p->draw(device);
 		//device->EndScene();
 
 		/*device->Present(NULL, NULL, NULL, NULL);*/

@@ -6,6 +6,8 @@
 #include "Entity.h"
 #include "IGameObject.h"
 
+#include <list>
+
 class Particle : public Entity, IGameObject
 {
 public:
@@ -13,12 +15,14 @@ public:
 	~Particle(void);
 
 	int update(double timestamp);
-	int draw(void);
+	int draw(LPDIRECT3DDEVICE9 dev);
 
 public:
 	int time_to_live;
 	double direction;
 	ALLEGRO_COLOR color;
+
+	static std::list<Particle *> particles;
 
 private:
 	int born;
