@@ -22,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	ShowWindow(hWnd, nCmdShow);
 
 	Game *ShadowSpaceGame = new Game();
-	ShadowSpaceGame->Setup();
+	ShadowSpaceGame->Setup(hWnd);
 	MSG ret = ShadowSpaceGame->Start();
 
 	return ret.wParam;
