@@ -22,8 +22,6 @@ public:
 	double direction;
 	ALLEGRO_COLOR color;
 
-	static std::list<Particle *> particles;
-
 private:
 	int born;
 	static std::list<Particle*> *particles;

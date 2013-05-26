@@ -1,6 +1,7 @@
 #include <allegro5\allegro5.h>
 #include <allegro5\allegro_primitives.h>
 #include <allegro5\allegro_direct3d.h>
+#include <allegro5\drawing.h>
 #include <windowsx.h>
 #include <Windows.h>
 #include <d3dx9.h>
@@ -14,12 +15,13 @@
 
 enum {PLAYING, QUITTING, CLEANUP, LOADING};
 
-#define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_SPECULAR)
+#define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 
 struct CUSTOMVERTEX
 {
-    FLOAT x, y, z, rhw;    // from the D3DFVF_XYZRHW flag
-    DWORD color;    // from the D3DFVF_DIFFUSE flag
+    FLOAT x, y, z;
+    D3DCOLOR diffuse;
+	D3DCOLOR specular;
 };
 
 int main(int argc, char** argv)
@@ -33,8 +35,9 @@ int main(int argc, char** argv)
 
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
 
-	//al_set_new_display_flags(ALLEGRO_DIRECT3D);
-	al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_REQUIRE);
+	al_set_new_display_flags(ALLEGRO_DIRECT3D); 
+	//al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_REQUIRE);
+	al_set_new_display_option(ALLEGRO_DEPTH_SIZE, 1, ALLEGRO_REQUIRE);
 	al_set_new_display_refresh_rate(60);
 	ALLEGRO_DISPLAY *display = al_create_display(1280, 800);
 	if(!display) return false;
@@ -72,16 +75,25 @@ int main(int argc, char** argv)
 	double end_time = hrtimer.getMilliseconds();
 
 	LPDIRECT3DDEVICE9 device = al_get_d3d_device(display);
+	device->SetRenderState(D3DRS_LIGHTING, FALSE);
+	device->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	CUSTOMVERTEX OurVertices[] =
 	{
-		{ 3.0f, -3.0f, 0.0f, D3DCOLOR_XRGB(10, 10, 255), D3DCOLOR_ARGB(255, 0, 0, 255)},
-        { 0.0f, 3.0f, 0.0f, D3DCOLOR_XRGB(10, 10, 255), D3DCOLOR_ARGB(255, 0, 0, 255)},
-        { -3.0f, -3.0f, 0.0f, D3DCOLOR_XRGB(10, 10, 255), D3DCOLOR_ARGB(255, 0, 0, 255)},
+		{  3.0f, -3.0f,  0.0f,  D3DCOLOR_ARGB(255, 255, 0, 255)},
+        {  3.0f,  3.0f,  0.0f,  D3DCOLOR_ARGB(255, 255, 0, 255)},
+        { -3.0f, -3.0f,  0.0f,  D3DCOLOR_ARGB(255, 255, 0, 255)},
+		{ -3.0f,  3.0f,  0.0f,  D3DCOLOR_ARGB(255, 255, 0, 255)},
+		{ -3.0f, -3.0f,  6.0f,  D3DCOLOR_ARGB(255, 255, 255, 0)},
+		{ -3.0f,  3.0f,  6.0f,  D3DCOLOR_ARGB(255, 255, 255, 0)},
+		{  3.0f, -3.0f,  6.0f,  D3DCOLOR_ARGB(255, 255, 255, 0)},
+		{  3.0f,  3.0f,  6.0f,  D3DCOLOR_ARGB(255, 255, 255, 0)},
+		{  3.0f, -3.0f,  0.0f,  D3DCOLOR_ARGB(255, 255, 255, 0)},
+		{  3.0f,  3.0f,  0.0f,  D3DCOLOR_ARGB(255, 255, 255, 0)},
 	};
 
 	LPDIRECT3DVERTEXBUFFER9 v_buffer;
-	device->CreateVertexBuffer(3*sizeof(CUSTOMVERTEX),
+	device->CreateVertexBuffer(20*sizeof(CUSTOMVERTEX),
                            0,
                            CUSTOMFVF,
                            D3DPOOL_MANAGED,
@@ -92,11 +104,9 @@ int main(int argc, char** argv)
 	v_buffer->Lock(0, 0, (void**)&pVoid, 0);
 	memcpy(pVoid, OurVertices, sizeof(OurVertices));
     v_buffer->Unlock();
-
 	
 	double angle = 100;
 	double rot_per_sec = D3DXToRadian(40);
-
 
 	while(gamestate == PLAYING)
 	{
@@ -122,10 +132,12 @@ int main(int argc, char** argv)
 			}
 		}
 
+		if(input->isKeyDown(ALLEGRO_KEY_ESCAPE)) gamestate = QUITTING;
+
 		if(elapsed_time > dt)
 		{
 			p->update(elapsed_time/1000.0f);
-			angle += rot_per_sec*(elapsed_time/1000.0f);
+			angle += rot_per_sec*(elapsed_time/1000.0f); 
 			elapsed_time = 0;
 		}
 
@@ -143,7 +155,7 @@ int main(int argc, char** argv)
 
 		D3DXMATRIX mat_view; 
 		D3DXMatrixLookAtLH(&mat_view,
-                       &D3DXVECTOR3 (0.0f, 0.0f, 10.0f),    // the camera position
+                       &D3DXVECTOR3 (0.0f, 0.0f, 50.0f),    // the camera position
                        &D3DXVECTOR3 (0.0f, 0.0f, 0.0f),    // the look-at position
                        &D3DXVECTOR3 (0.0f, 1.0f, 0.0f));    // the up direction
 
@@ -161,8 +173,7 @@ int main(int argc, char** argv)
 		
 		device->SetStreamSource(0, v_buffer, 0, sizeof(CUSTOMVERTEX));
 		
-		device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
-
+		device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 8);
 		p->draw(device);
 		//device->EndScene();
 
