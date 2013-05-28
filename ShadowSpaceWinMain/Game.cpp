@@ -28,6 +28,7 @@ int Game::Setup(HWND windowHandle)
 	d3dpp.BackBufferWidth = GameSettings::WINDOW_HEIGHT;
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	d3d9Interface->CreateDevice(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL, 
@@ -61,6 +62,7 @@ int Game::Setup(HWND windowHandle)
 
 
 	player = new Player();
+	hrTimer = new HighResTimer();
 
 	return TRUE;
 }
@@ -92,8 +94,24 @@ MSG Game::Start(void)
 
 	player->InitGeometry(d3dDevice);
 
+	hrTimer->startTimer();
+	offset = hrTimer->getMilliseconds();
+	fps = 0;
+	updates = 0;
+
+	double updateInterval = 1000/60.0f;
+	elapsedTime = 0.0f;
+	double lastTime = hrTimer->getMilliseconds();
+	double currentTime = hrTimer->getMilliseconds();
+	double counter = 0.0;
+
+
 	while(State != QUITTING)
 	{
+		lastTime = currentTime;
+		currentTime = hrTimer->getMilliseconds();
+		elapsedTime = currentTime - lastTime;
+
 		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
@@ -103,10 +121,14 @@ MSG Game::Start(void)
 		if(msg.message == WM_QUIT)
 			State = QUITTING;
 
-		if(inputHandler->IsKeyDown(VK_ESCAPE))
-			State = QUITTING;
+		counter += elapsedTime;
+		if(counter > updateInterval)
+		{
+			updates += 1;
+			counter = counter - updateInterval;
+			Update();
+		}
 
-		Update();
 		Render();
 	}
 
@@ -117,6 +139,8 @@ MSG Game::Start(void)
 
 int Game::Render(void)
 {
+	fps += 1;
+
 	d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0F, 0);
 	d3dDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 
@@ -145,7 +169,7 @@ int Game::Render(void)
 	player->Draw(d3dDevice);
 	RenderCameraPole();
 
-	static RECT textbox; SetRect(&textbox, 0, 0, GameSettings::WINDOW_WIDTH, GameSettings::WINDOW_WIDTH); 
+	static RECT textbox; SetRect(&textbox, 0, 0, 800, 200); 
 
 	char output[100];
 	memset(output, '\0', 100);
@@ -159,6 +183,32 @@ int Game::Render(void)
                       DT_LEFT | DT_VCENTER,
                       D3DCOLOR_ARGB(255, 255, 0, 255));
 
+	SetRect(&textbox, 0, 200, 800, 400);
+
+	sprintf(output, "fps: %5f", fps/((hrTimer->getMilliseconds() - offset)/1000));
+
+    // draw the Hello World text
+    dxfont->DrawTextA(NULL,
+                      output,
+                      strlen(output),
+                      &textbox,
+					  DT_LEFT | DT_VCENTER,
+                      D3DCOLOR_ARGB(255, 255, 0, 255));
+
+	d3dDevice->EndScene();
+	d3dDevice->Present(NULL, NULL, NULL, NULL);
+
+	SetRect(&textbox, 0, 400, 800, 600);
+	sprintf(output, "updates: %5f", updates/((hrTimer->getMilliseconds() - offset)/1000));
+
+    // draw the Hello World text
+    dxfont->DrawTextA(NULL,
+                      output,
+                      strlen(output),
+                      &textbox,
+					  DT_LEFT | DT_VCENTER,
+                      D3DCOLOR_ARGB(255, 255, 0, 255));
+
 	d3dDevice->EndScene();
 	d3dDevice->Present(NULL, NULL, NULL, NULL);
 
@@ -167,6 +217,10 @@ int Game::Render(void)
 
 int Game::Update(void)
 {
+	if(inputHandler->IsKeyDown(VK_ESCAPE))
+		State = QUITTING;
+
+	player->Update(elapsedTime);
 	UpdateCamera();
 	return TRUE;
 }
@@ -340,7 +394,7 @@ int Game::UpdateCamera(void)
 	}
 
 	GetCursorPos(&mousePos);
-	SetCursorPos(GameSettings::WINDOW_WIDTH / 2, GameSettings::WINDOW_HEIGHT / 2);
+	//SetCursorPos(GameSettings::WINDOW_WIDTH / 2, GameSettings::WINDOW_HEIGHT / 2);
 
 	mousePos.x -= GameSettings::WINDOW_WIDTH / 2;
 	mousePos.y -= GameSettings::WINDOW_HEIGHT / 2;

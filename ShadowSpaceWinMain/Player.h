@@ -17,5 +17,8 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
 	LPDIRECT3DINDEXBUFFER9 indexBuffer;
 	D3DXMATRIX playerIdentityMatrix;
+
+private:
+	float angle;
 };
 

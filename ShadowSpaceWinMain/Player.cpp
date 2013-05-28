@@ -6,8 +6,7 @@ Player::Player(void)
 	position.y = 0.0f;
 	position.z = 1.0f;
 
-
-
+	angle = 0.0f;
 }
 
 Player::~Player(void)
@@ -16,6 +15,8 @@ Player::~Player(void)
 
 int Player::Update(double timestamp)
 {
+	angle += 180.0f * timestamp/1000.0f;
+
 	return 0;
 }
 
@@ -24,10 +25,8 @@ int Player::Draw(LPDIRECT3DDEVICE9 dev)
 	dev->SetFVF(FVF_DIFFUSE);
 
 	D3DXMATRIX rotMatrix;
-	static float angle = 1.0f;
-	angle += 0.01f;
 
-	D3DXMatrixRotationX(&rotMatrix, angle);
+	D3DXMatrixRotationX(&rotMatrix, D3DXToRadian(angle));
 
 	dev->SetTransform(D3DTS_WORLD, &(playerIdentityMatrix*rotMatrix));
     dev->SetStreamSource(0, vertexBuffer, 0, sizeof(XYZ_DIFFUSE));
@@ -44,7 +43,6 @@ int Player::InitGeometry(LPDIRECT3DDEVICE9 dev)
 		{  3.0f,  3.0f, -3.0f, D3DCOLOR_XRGB(255, 128, 255) }, // 1
 		{ -3.0f, -3.0f, -3.0f, D3DCOLOR_XRGB(255, 128, 255) }, // 2
 		{  3.0f, -3.0f, -3.0f, D3DCOLOR_XRGB(255, 128, 255) }, // 3
-												  
 		{ -3.0f,  3.0f,  3.0f, D3DCOLOR_XRGB(255, 128, 255) }, // 4
 		{  3.0f,  3.0f,  3.0f, D3DCOLOR_XRGB(255, 128, 255) }, // 5
 		{ -3.0f, -3.0f,  3.0f, D3DCOLOR_XRGB(255, 128, 255) }, // 6

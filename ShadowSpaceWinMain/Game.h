@@ -2,6 +2,7 @@
 
 #include "SharedSettings.h"
 #include "Utility.h"
+#include "HighResTimer.h"
 #include "InputHandler.h"
 #include "Point.h"
 #include "Vector.h"
@@ -70,5 +71,13 @@ private:
 
 	LPD3DXFONT dxfont;
 	POINT mousePos;
+
+	HighResTimer *hrTimer;
+	double fps;
+	double offset;
+	double updates;
+	double elapsedTime;
+
+
 };
 
