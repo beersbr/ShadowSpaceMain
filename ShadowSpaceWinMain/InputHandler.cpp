@@ -12,20 +12,20 @@ InputHandler* InputHandler::Instance()
 	return InputHandler::instance;
 }
 
-bool InputHandler::isKeyDown(const int al_keycode)
+bool InputHandler::IsKeyDown(const int keycode)
 {
-	if(key_states[al_keycode]) return key_states[al_keycode];
+	if(key_states[keycode]) return key_states[keycode];
 	return false;
 }
 
-void InputHandler::setKey(const int al_keycode)
+void InputHandler::SetKey(const int keycode)
 {
-	key_states[al_keycode] = true;
+	key_states[keycode] = true;
 }
 
-void InputHandler::unsetKey(const int al_keycode)
+void InputHandler::UnSetKey(const int keycode)
 {
-	key_states[al_keycode] = false;
+	key_states[keycode] = false;
 }
 
 InputHandler::InputHandler(void)

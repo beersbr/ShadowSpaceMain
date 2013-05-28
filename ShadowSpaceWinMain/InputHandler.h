@@ -8,9 +8,9 @@ public:
 	~InputHandler(void);
 
 	static InputHandler* Instance();
-	bool isKeyDown(const int al_keycode);
-	void setKey(const int keyCode);
-	void unsetKey(const int keyCode);
+	bool IsKeyDown(const int al_keycode);
+	void SetKey(const int keyCode);
+	void UnSetKey(const int keyCode);
 
 private:
 	InputHandler(void);

@@ -6,6 +6,7 @@
 #include <windowsx.h>
 
 LRESULT CALLBACK WinCallback(HWND, unsigned int, WPARAM, LPARAM);
+Game *ShadowSpaceGame = NULL;
 
 int WINAPI WinMain(HINSTANCE hInstance,
 				   HINSTANCE hPrevInstance,
@@ -21,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 	ShowWindow(hWnd, nCmdShow);
 
-	Game *ShadowSpaceGame = new Game();
+	ShadowSpaceGame = new Game();
 	ShadowSpaceGame->Setup(hWnd);
 	MSG ret = ShadowSpaceGame->Start();
 
@@ -35,6 +36,12 @@ LRESULT CALLBACK WinCallback(HWND hWnd, unsigned int message, WPARAM wParam, LPA
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+		break;
+	case WM_KEYDOWN:
+		ShadowSpaceGame->inputHandler->SetKey(wParam);
+		break;
+	case WM_KEYUP:
+		ShadowSpaceGame->inputHandler->UnSetKey(wParam);
 		break;
 	}
 

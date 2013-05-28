@@ -5,31 +5,31 @@ class Point
 public:
 	Point(void);
 	Point(const Point &pt);
-	Point(double X, double Y);
+	Point(float X, float Y, float Z);
 	~Point(void);
 
 	Point& operator=(const Point &p);
 
 	Point operator+(const Point &p) const;
-	Point operator+(const double scalar) const;
+	Point operator+(const float scalar) const;
 	Point operator-(const Point &p) const;
-	Point operator-(const double scalar) const;
+	Point operator-(const float scalar) const;
 	Point operator*(const Point &p) const;
-	Point operator*(const double scalar) const;
+	Point operator*(const float scalar) const;
 	Point operator/(const Point &p) const;
-	Point operator/(const double scalar) const;
+	Point operator/(const float scalar) const;
 
 	Point& operator+=(const Point &p);
-	Point& operator+=(const double scalar);
+	Point& operator+=(const float scalar);
 	Point& operator-=(const Point &p);
-	Point& operator-=(const double scalar);
+	Point& operator-=(const float scalar);
 	Point& operator*=(const Point &p);
-	Point& operator*=(const double scalar);
+	Point& operator*=(const float scalar);
 	Point& operator/=(const Point &p);
-	Point& operator/=(const double scalar);
+	Point& operator/=(const float scalar);
 
 	bool operator==(const Point &p) const;
 
 public:
-	double x, y;
+	float x, y, z;
 };

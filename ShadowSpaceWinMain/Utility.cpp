@@ -18,7 +18,7 @@ HWND CreateDefaultWindow(HINSTANCE handle, unsigned int winWidth, unsigned int w
 	hWnd = CreateWindowEx(NULL,
 						  L"MainWinClass",
 						  windowTitle,
-						  WS_OVERLAPPEDWINDOW,
+						  WS_OVERLAPPEDWINDOW, // WS_EX_TOPMOST | WS_POPUP // fullscreen values
 						  300,
 						  300,
 						  winWidth,

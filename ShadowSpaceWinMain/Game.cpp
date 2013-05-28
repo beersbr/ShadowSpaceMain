@@ -3,10 +3,14 @@
 Game::Game(void)
 {
 	State = NONE;
+	inputHandler = InputHandler::Instance();
+
+	index = 0;
 }
 
 Game::~Game(void)
 {
+
 }
 
 int Game::Setup(HWND windowHandle)
@@ -19,6 +23,9 @@ int Game::Setup(HWND windowHandle)
 	d3dpp.Windowed = TRUE;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.hDeviceWindow = windowHandle;
+	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
+	d3dpp.BackBufferWidth = GameSettings::WINDOW_WIDTH;
+	d3dpp.BackBufferWidth = GameSettings::WINDOW_HEIGHT;
 
 	d3d9Interface->CreateDevice(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL, 
@@ -26,8 +33,18 @@ int Game::Setup(HWND windowHandle)
 		D3DCREATE_HARDWARE_VERTEXPROCESSING, 
 		&d3dpp, 
 		&d3dDevice);
-	
 
+	d3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE); // turn off 3d lighting
+
+	gridSize = 10;
+
+	cameraPosition.z = 20.0f;
+	cameraPosition.y = 5.0f;
+	cameraLookatPosition.y = 5.0f;
+	cameraPolePosition.y = 5.0f;
+
+
+	player = new Player();
 
 	return TRUE;
 }
@@ -39,6 +56,26 @@ MSG Game::Start(void)
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 
+	XYZ_DIFFUSE vertices[] = {
+		{  3.0f,  -3.0f,  1.0f, D3DCOLOR_ARGB(255, 160, 0, 160) },
+		{  0.0f,   3.0f,  1.0f, D3DCOLOR_ARGB(255, 160, 0, 160) },
+		{ -3.0f,  -3.0f,  1.0f, D3DCOLOR_ARGB(255, 160, 0, 160) },
+	};
+
+	vertexBuffer = NULL;
+	d3dDevice->CreateVertexBuffer(3*sizeof(XYZ_DIFFUSE), 0, FVF_DIFFUSE, D3DPOOL_MANAGED, &vertexBuffer, NULL);
+
+	void* pVoid;    // a void pointer
+
+    vertexBuffer->Lock(0, 0, (void**)&pVoid, 0);
+    memcpy(pVoid, vertices, sizeof(vertices));
+    vertexBuffer->Unlock();
+
+	InitDebugGrid();
+	InitCameraPole();
+
+	player->InitGeometry(d3dDevice);
+
 	while(State != QUITTING)
 	{
 		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -48,22 +85,51 @@ MSG Game::Start(void)
 		}
 
 		if(msg.message == WM_QUIT)
-			break;
+			State = QUITTING;
+
+		if(inputHandler->IsKeyDown(VK_ESCAPE))
+			State = QUITTING;
 
 		Update();
 		Render();
 	}
+
+	Cleanup();
 
 	return msg;
 }
 
 int Game::Render(void)
 {
-	d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 40, 100), 1.0F, 0);
+	d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0F, 0);
 
 	d3dDevice->BeginScene();
-	d3dDevice->EndScene();
+	d3dDevice->SetFVF(FVF_DIFFUSE);
+	
+    // SET UP THE PIPELINE
 
+    D3DXMATRIX matView;    // the view transform matrix
+    D3DXMatrixLookAtLH(&matView, 
+		&D3DXVECTOR3 (cameraPosition.x, cameraPosition.y, cameraPosition.z),    // the camera position
+		&D3DXVECTOR3 (cameraLookatPosition.x, cameraLookatPosition.y, cameraLookatPosition.z),    // the look-at position
+        &D3DXVECTOR3 (0.0f, 1.0f, 0.0f));    // the up direction
+
+    d3dDevice->SetTransform(D3DTS_VIEW, &matView);    // set the view transform to matView
+
+    D3DXMATRIX matProjection;     // the projection transform matrix
+
+    D3DXMatrixPerspectiveFovLH(&matProjection,
+                               D3DXToRadian(45),    // the horizontal field of view
+                               (FLOAT)GameSettings::WINDOW_WIDTH / (FLOAT)GameSettings::WINDOW_HEIGHT, // aspect ratio
+                               1.0f,    // the near view-plane
+                               100.0f);    // the far view-plane
+
+    d3dDevice->SetTransform(D3DTS_PROJECTION, &matProjection);    // set the projection
+	RenderDebugGrid();
+	player->Draw(d3dDevice);
+	RenderCameraPole();
+
+	d3dDevice->EndScene();
 	d3dDevice->Present(NULL, NULL, NULL, NULL);
 
 	return TRUE;
@@ -71,5 +137,185 @@ int Game::Render(void)
 
 int Game::Update(void)
 {
+	UpdateCamera();
 	return TRUE;
+}
+
+int Game::Cleanup(void)
+{
+	State = CLEANUP;
+
+	vertexBuffer->Release();
+	d3dDevice->Release();
+	d3d9Interface->Release();
+
+	return TRUE;
+}
+
+int Game::RenderDebugGrid(void)
+{
+    d3dDevice->SetFVF(FVF_DIFFUSE);
+    d3dDevice->SetTransform(D3DTS_WORLD, &gridIdentityMatrix);
+    d3dDevice->SetStreamSource(0, debugGridBuffer, 0, sizeof(XYZ_DIFFUSE));
+    d3dDevice->DrawPrimitive(D3DPT_LINELIST, 0, gridSize * 4 + 2);
+    return TRUE;
+}
+
+int Game::InitDebugGrid(void)
+{
+	gridSize = 10;
+
+    d3dDevice->CreateVertexBuffer(sizeof(XYZ_DIFFUSE) * gridSize * 9,
+                                0,
+                                FVF_DIFFUSE,
+                                D3DPOOL_MANAGED,
+                                &debugGridBuffer,
+                                0);
+
+    XYZ_DIFFUSE* pGridData = NULL;
+    debugGridBuffer->Lock(0, 0, (void**)&pGridData, 0);
+
+    int index = 0;
+    for(; index <= gridSize * 4 + 1; index++)
+    {
+        pGridData[index].x = (index % 2) ? gridSize : -gridSize;
+        pGridData[index].y = 0.0f;
+        pGridData[index].z = index / 2 - gridSize;
+        pGridData[index].diffuse = D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f);
+    }
+
+    for(; index <= gridSize * 8 + 4; index++)
+    {
+        static int half = index;
+        pGridData[index].x = (index - half) / 2 - gridSize;
+        pGridData[index].y = 0.0f;
+        pGridData[index].z = (index % 2) ? -gridSize : gridSize;
+    }
+
+    debugGridBuffer->Unlock();
+    D3DXMatrixIdentity(&gridIdentityMatrix);
+	return TRUE;
+}
+
+int Game::RenderCameraPole(void)
+{
+	d3dDevice->SetFVF(FVF_DIFFUSE);
+	D3DXMATRIX m = UpdateCameraPole();
+	d3dDevice->SetTransform(D3DTS_WORLD, &(cameraPoleIdentityMatrix * m));
+	d3dDevice->SetStreamSource(0, cameraPoleBuffer, 0, sizeof(XYZ_DIFFUSE));
+	d3dDevice->DrawPrimitive(D3DPT_LINELIST, 0, 1);
+	return 0;
+}
+
+D3DXMATRIX Game::UpdateCameraPole(void)
+{
+	D3DXMATRIX translateToCamera;
+	Vector d = cameraLookatPosition - cameraPolePosition;
+	cameraPolePosition += d;
+	D3DXMatrixTranslation(&translateToCamera, cameraPolePosition.x, cameraPolePosition.y, cameraPolePosition.z);
+	return translateToCamera;
+}
+
+int Game::InitCameraPole(void)
+{
+	d3dDevice->CreateVertexBuffer(sizeof(XYZ_DIFFUSE) * 2,
+		0,
+		FVF_DIFFUSE,
+		D3DPOOL_MANAGED,
+		&cameraPoleBuffer,
+		0);
+
+	XYZ_DIFFUSE cameraVertices[] = { 
+		{  0.0f,  2.0f,  0.0f, D3DCOLOR_XRGB(255, 0, 0) },
+		{  0.0f, -2.0f,  0.0f, D3DCOLOR_XRGB(255, 0, 0) },
+	};
+
+	VOID *pVoid;
+	cameraPoleBuffer->Lock(0, 0, (void**)&pVoid, 0);
+	memcpy(pVoid, cameraVertices, sizeof(cameraVertices));
+	cameraPoleBuffer->Unlock();
+	D3DXMatrixIdentity(&cameraPoleIdentityMatrix);
+	return 0;
+}
+
+int Game::UpdateCamera(void)
+{
+	if(inputHandler->IsKeyDown('D'))
+	{
+		Vector t = cameraLookatPosition - cameraPosition;
+
+		float x = t.x;
+		float z = t.z;
+
+		float len = sqrt(x*x + z*z);
+		x = x/len;
+		z = z/len;
+
+		cameraPosition.x += z*0.1f;
+		cameraLookatPosition.x += z*0.1f;
+		cameraPosition.z += x*0.1f*-1;
+		cameraLookatPosition.z += x*0.1f*-1;
+	}
+	if(inputHandler->IsKeyDown('A'))
+	{
+		Vector t = cameraLookatPosition - cameraPosition;
+
+		float x = t.x;
+		float z = t.z;
+
+		float len = sqrt(x*x + z*z);
+		x = x/len;
+		z = z/len;
+
+		cameraPosition.x += z*0.1f*-1;
+		cameraLookatPosition.x += z*0.1f*-1;
+		cameraPosition.z += x*0.1f;
+		cameraLookatPosition.z += x*0.1f;
+	}
+	if(inputHandler->IsKeyDown('W'))
+	{
+		cameraPosition.y += 0.1f;
+		cameraLookatPosition.y += 0.1f;
+	}
+	if(inputHandler->IsKeyDown('S'))
+	{
+		cameraPosition.y -= 0.1f;
+		cameraLookatPosition.y -= 0.1f;
+	}
+
+	POINT mousePos;
+	GetCursorPos(&mousePos);
+	SetCursorPos(GameSettings::WINDOW_WIDTH / 2, GameSettings::WINDOW_HEIGHT / 2);
+
+	mousePos.x -= GameSettings::WINDOW_WIDTH / 2;
+	mousePos.y -= GameSettings::WINDOW_HEIGHT / 2;
+
+	if(mousePos.x != 0)
+	{
+		Vector d = cameraLookatPosition - cameraPosition;
+		d = d.rotate(Vector(0.0f, 1.0f, 0.0f), (3.14159)/2);
+		D3DXMATRIX rotateMatrix;
+		D3DXMatrixTranslation(&rotateMatrix, d.x, d.y, d.z);
+		D3DXMatrixRotationY(&rotateMatrix, mousePos.x * 0.1f);
+		D3DXMatrixTranslation(&rotateMatrix, -d.x, -d.y, -d.z);
+
+
+
+		//Vector t = cameraPosition - cameraLookatPosition;
+		//float x = t.x;
+		//float z = t.z;
+		//float len = sqrt(x*x + z*z);
+		//x = x/len;
+		//z = z/len;
+
+		//int mod = (mousePos.x < 0 ? -1 : 1);
+
+		//cameraLookatPosition.x -= z*0.1f * mod * (mousePos.x*mousePos.x/2)*0.1f;
+		//cameraLookatPosition.z -= x*0.1f * mod*-1 * (mousePos.x*mousePos.x/2)*0.1f;
+
+
+		cameraLookatPosition.y -= mousePos.y*0.1f;
+	}
+
+	return 0;
 }
