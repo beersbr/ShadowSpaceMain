@@ -23,7 +23,13 @@ int Player::Draw(LPDIRECT3DDEVICE9 dev)
 {
 	dev->SetFVF(FVF_DIFFUSE);
 
-	dev->SetTransform(D3DTS_WORLD, &playerIdentityMatrix);
+	D3DXMATRIX rotMatrix;
+	static float angle = 1.0f;
+	angle += 0.01f;
+
+	D3DXMatrixRotationX(&rotMatrix, angle);
+
+	dev->SetTransform(D3DTS_WORLD, &(playerIdentityMatrix*rotMatrix));
     dev->SetStreamSource(0, vertexBuffer, 0, sizeof(XYZ_DIFFUSE));
 	dev->SetIndices(indexBuffer);
     dev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 16);
@@ -72,7 +78,7 @@ int Player::InitGeometry(LPDIRECT3DDEVICE9 dev)
     memcpy(pVoid, verts, sizeof(verts));
     vertexBuffer->Unlock();
 
-	dev->CreateIndexBuffer(32*sizeof(short), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &indexBuffer, NULL);
+	dev->CreateIndexBuffer(36*sizeof(short), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &indexBuffer, NULL);
 
 	indexBuffer->Lock(0, 0, (void**)&pVoid, 0);
     memcpy(pVoid, index, sizeof(index));

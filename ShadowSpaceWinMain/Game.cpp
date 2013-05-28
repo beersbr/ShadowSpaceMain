@@ -47,7 +47,7 @@ int Game::Setup(HWND windowHandle)
 	cameraPolePosition.y = 5.0f;
 
 	D3DXCreateFont(d3dDevice,    // the D3D Device
-                   24,    // font height of 30
+                   16,    // font height of 30
                    0,    // default font width
                    FW_NORMAL,    // font weight
                    1,    // not using MipLevels
