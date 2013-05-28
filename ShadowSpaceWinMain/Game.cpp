@@ -43,6 +43,19 @@ int Game::Setup(HWND windowHandle)
 	cameraLookatPosition.y = 5.0f;
 	cameraPolePosition.y = 5.0f;
 
+	D3DXCreateFont(d3dDevice,    // the D3D Device
+                   30,    // font height of 30
+                   0,    // default font width
+                   FW_NORMAL,    // font weight
+                   1,    // not using MipLevels
+                   false,    // italic font
+                   DEFAULT_CHARSET,    // default character set
+                   OUT_DEFAULT_PRECIS,    // default OutputPrecision,
+                   DEFAULT_QUALITY,    // default Quality
+                   DEFAULT_PITCH | FF_DONTCARE,    // default pitch and family
+                   L"Arial",    // use Facename Arial
+                   &dxfont);    // the font object
+
 
 	player = new Player();
 
@@ -128,6 +141,20 @@ int Game::Render(void)
 	RenderDebugGrid();
 	player->Draw(d3dDevice);
 	RenderCameraPole();
+
+	static RECT textbox; SetRect(&textbox, 0, 0, GameSettings::WINDOW_WIDTH, GameSettings::WINDOW_WIDTH); 
+
+	char output[100];
+	memset(output, '\0', 100);
+	sprintf(output, "X: %5f Y: %5f  Z: %5f                 ", cameraLookatPosition.x, cameraLookatPosition.y, cameraLookatPosition.z);
+
+    // draw the Hello World text
+    dxfont->DrawTextA(NULL,
+                      output,
+                      strlen(output),
+                      &textbox,
+                      DT_LEFT | DT_VCENTER,
+                      D3DCOLOR_ARGB(255, 255, 0, 255));
 
 	d3dDevice->EndScene();
 	d3dDevice->Present(NULL, NULL, NULL, NULL);
@@ -283,23 +310,45 @@ int Game::UpdateCamera(void)
 		cameraLookatPosition.y -= 0.1f;
 	}
 
-	POINT mousePos;
+	if(inputHandler->IsKeyDown(VK_UP))
+	{
+		cameraLookatPosition.y += 0.1f; 
+	}
+	if(inputHandler->IsKeyDown(VK_DOWN))
+	{
+		cameraLookatPosition.y -= 0.1f;
+	}
+	if(inputHandler->IsKeyDown(VK_LEFT))
+	{
+		Vector C = cameraLookatPosition - cameraPosition;
+		Vector d = C.rotate(Vector(0.0f, 1.0f, 0.0f), D3DXToRadian(-1.0f));
+		d = d - C;
+		cameraLookatPosition.x += d.x;
+		cameraLookatPosition.z += d.z;
+	}
+	if(inputHandler->IsKeyDown(VK_RIGHT))
+	{
+		Vector C = cameraLookatPosition - cameraPosition;
+		Vector d = C.rotate(Vector(0.0f, 1.0f, 0.0f), D3DXToRadian(1.0f));
+		d = d - C;
+		cameraLookatPosition.x += d.x;
+		cameraLookatPosition.z += d.z;
+	}
+
 	GetCursorPos(&mousePos);
 	SetCursorPos(GameSettings::WINDOW_WIDTH / 2, GameSettings::WINDOW_HEIGHT / 2);
 
 	mousePos.x -= GameSettings::WINDOW_WIDTH / 2;
 	mousePos.y -= GameSettings::WINDOW_HEIGHT / 2;
 
-	if(mousePos.x != 0)
+	//if(mousePos.x != 0)
+	if(false)
 	{
-		Vector d = cameraLookatPosition - cameraPosition;
-		d = d.rotate(Vector(0.0f, 1.0f, 0.0f), (3.14159)/2);
-		D3DXMATRIX rotateMatrix;
-		D3DXMatrixTranslation(&rotateMatrix, d.x, d.y, d.z);
-		D3DXMatrixRotationY(&rotateMatrix, mousePos.x * 0.1f);
-		D3DXMatrixTranslation(&rotateMatrix, -d.x, -d.y, -d.z);
+		Vector C = cameraLookatPosition - cameraPosition;
+		Vector d = C.rotate(Vector(0.0f, 1.0f, 0.0f), D3DXToDegree(mousePos.x * 0.00001f));
 
-
+		cameraLookatPosition.x = d.x;
+		cameraLookatPosition.z = d.z;
 
 		//Vector t = cameraPosition - cameraLookatPosition;
 		//float x = t.x;

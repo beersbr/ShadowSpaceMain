@@ -38,13 +38,10 @@ double Vector::operator*(const Vector &v) const
 
 Vector Vector::operator*(const double d)
 {
-	(*this).x *= d;
-	(*this).y *= d;
-	(*this).z *= d;
-	return *this;
+	return Vector(x*d, y*d, z*d);
 }
 
-Vector Vector::rotate(const Vector &axis, double angle)
+Vector Vector::rotate(Vector &axis, double angle)
 {
 	Vector t = (*this);
 	return ((t - axis * (axis * t)) * cos(angle)) + (axis.DotProduct(t) * sin(angle)) + (axis * (axis * t));

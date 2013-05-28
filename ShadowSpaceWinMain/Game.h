@@ -66,9 +66,9 @@ private:
 
 	Vector cameraPosition;
 	Vector cameraLookatPosition;
-
 	Vector cameraPolePosition;
 
-	POINT lastMousePos;
+	LPD3DXFONT dxfont;
+	POINT mousePos;
 };
 
