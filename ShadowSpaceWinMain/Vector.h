@@ -13,8 +13,9 @@ public:
 	Vector(const Point &p);
 	~Vector(void);
 
-	Vector& operator*(const Vector &v) const;
-	Vector& operator*(const double d);
+	Vector DotProduct(const Vector &v);
+	double operator*(const Vector &v) const;
+	Vector operator*(double d);
 	Vector rotate(const Vector &axis, double angle);
 	double cos_angle(const Vector &v) const;
 

@@ -22,7 +22,7 @@ Vector::~Vector(void)
 {
 }
 
-Vector& Vector::operator*(const Vector &v) const
+ Vector Vector::DotProduct(const Vector &v)
 {
     double a = (y * v.z) - (z * v.y);
     double b = (z * v.x) - (x * v.z);
@@ -31,7 +31,12 @@ Vector& Vector::operator*(const Vector &v) const
     return Vector(a, b, c);
 }
 
-Vector& Vector::operator*(const double d)
+double Vector::operator*(const Vector &v) const
+{
+	return (x * v.x) + (y * v.y) + (z * v.z);
+}
+
+Vector Vector::operator*(const double d)
 {
 	(*this).x *= d;
 	(*this).y *= d;
@@ -42,7 +47,7 @@ Vector& Vector::operator*(const double d)
 Vector Vector::rotate(const Vector &axis, double angle)
 {
 	Vector t = (*this);
-	return ((t - axis * (axis * t)) * cos(angle)) + (((axis * t) * sin(angle))) + (axis * (axis * t));
+	return ((t - axis * (axis * t)) * cos(angle)) + (axis.DotProduct(t) * sin(angle)) + (axis * (axis * t));
 }
 
 double Vector::cos_angle(const Vector &v) const
