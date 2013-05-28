@@ -26,6 +26,8 @@ int Game::Setup(HWND windowHandle)
 	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
 	d3dpp.BackBufferWidth = GameSettings::WINDOW_WIDTH;
 	d3dpp.BackBufferWidth = GameSettings::WINDOW_HEIGHT;
+	d3dpp.EnableAutoDepthStencil = TRUE;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
 	d3d9Interface->CreateDevice(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL, 
@@ -35,16 +37,17 @@ int Game::Setup(HWND windowHandle)
 		&d3dDevice);
 
 	d3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE); // turn off 3d lighting
+	d3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	gridSize = 10;
 
-	cameraPosition.z = 20.0f;
+	cameraPosition.z = -20.0f;
 	cameraPosition.y = 5.0f;
 	cameraLookatPosition.y = 5.0f;
 	cameraPolePosition.y = 5.0f;
 
 	D3DXCreateFont(d3dDevice,    // the D3D Device
-                   30,    // font height of 30
+                   24,    // font height of 30
                    0,    // default font width
                    FW_NORMAL,    // font weight
                    1,    // not using MipLevels
@@ -115,6 +118,7 @@ MSG Game::Start(void)
 int Game::Render(void)
 {
 	d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0F, 0);
+	d3dDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 
 	d3dDevice->BeginScene();
 	d3dDevice->SetFVF(FVF_DIFFUSE);
@@ -130,7 +134,6 @@ int Game::Render(void)
     d3dDevice->SetTransform(D3DTS_VIEW, &matView);    // set the view transform to matView
 
     D3DXMATRIX matProjection;     // the projection transform matrix
-
     D3DXMatrixPerspectiveFovLH(&matProjection,
                                D3DXToRadian(45),    // the horizontal field of view
                                (FLOAT)GameSettings::WINDOW_WIDTH / (FLOAT)GameSettings::WINDOW_HEIGHT, // aspect ratio
@@ -146,7 +149,7 @@ int Game::Render(void)
 
 	char output[100];
 	memset(output, '\0', 100);
-	sprintf(output, "X: %5f Y: %5f  Z: %5f                 ", cameraLookatPosition.x, cameraLookatPosition.y, cameraLookatPosition.z);
+	sprintf(output, "X: %5f Y: %5f  Z: %5f                 ", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
     // draw the Hello World text
     dxfont->DrawTextA(NULL,
@@ -217,6 +220,7 @@ int Game::InitDebugGrid(void)
         pGridData[index].x = (index - half) / 2 - gridSize;
         pGridData[index].y = 0.0f;
         pGridData[index].z = (index % 2) ? -gridSize : gridSize;
+		pGridData[index].diffuse = D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f);
     }
 
     debugGridBuffer->Unlock();
@@ -312,11 +316,11 @@ int Game::UpdateCamera(void)
 
 	if(inputHandler->IsKeyDown(VK_UP))
 	{
-		cameraLookatPosition.y += 0.1f; 
+		cameraLookatPosition.y += 0.2f; 
 	}
 	if(inputHandler->IsKeyDown(VK_DOWN))
 	{
-		cameraLookatPosition.y -= 0.1f;
+		cameraLookatPosition.y -= 0.2f;
 	}
 	if(inputHandler->IsKeyDown(VK_LEFT))
 	{
