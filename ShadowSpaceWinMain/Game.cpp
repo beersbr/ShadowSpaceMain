@@ -63,7 +63,7 @@ int Game::Setup(HWND windowHandle)
 
 	player = new Player();
 	hrTimer = new HighResTimer();
-
+	moveCamera = true;
 	return TRUE;
 }
 
@@ -128,6 +128,7 @@ MSG Game::Start(void)
 			//counter = counter - updateInterval;
 			Update(counter);
 			counter = 0.0f;
+			inputHandler->ClearStates();
 		}
 
 		Render();
@@ -222,7 +223,17 @@ int Game::Update(double elapsedTime)
 		State = QUITTING;
 
 	player->Update(elapsedTime);
-	UpdateCamera();
+
+	if(inputHandler->IsKeyPressed('C'))
+	{
+		moveCamera = !moveCamera;
+	}
+
+	if(moveCamera)
+	{
+		UpdateCamera();
+	}
+	
 	return TRUE;
 }
 

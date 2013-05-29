@@ -78,6 +78,7 @@ private:
 	double updates;
 	double elapsedTime;
 
+	bool moveCamera;
 
 };
 
