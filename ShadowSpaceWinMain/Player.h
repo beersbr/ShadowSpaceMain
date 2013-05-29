@@ -1,4 +1,4 @@
-#pragma once
+#pragma once	
 #include "Utility.h"
 #include "Entity.h"
 #include "IGameObject.h"
@@ -20,5 +20,8 @@ private:
 
 private:
 	float angle;
-};
 
+	LPD3DXMESH meshSpaceship;		// define the mesh pointer
+	D3DMATERIAL9* material;			// define the material object
+	DWORD numMaterials;				// stores the number of materials in the mesh
+};
