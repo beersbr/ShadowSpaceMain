@@ -57,7 +57,7 @@ int Game::Setup(HWND windowHandle)
                    OUT_DEFAULT_PRECIS,    // default OutputPrecision,
                    DEFAULT_QUALITY,    // default Quality
                    DEFAULT_PITCH | FF_DONTCARE,    // default pitch and family
-                   L"Arial",    // use Facename Arial
+                   L"Monaco",    // use Facename Arial
                    &dxfont);    // the font object
 
 
@@ -197,9 +197,6 @@ int Game::Render(void)
 					  DT_LEFT | DT_VCENTER,
                       D3DCOLOR_ARGB(255, 255, 0, 255));
 
-	d3dDevice->EndScene();
-	d3dDevice->Present(NULL, NULL, NULL, NULL);
-
 	SetRect(&textbox, 0, 400, 800, 600);
 	sprintf(output, "updates: %5f", updates/((hrTimer->getMilliseconds() - offset)/1000));
 
@@ -209,7 +206,7 @@ int Game::Render(void)
                       strlen(output),
                       &textbox,
 					  DT_LEFT | DT_VCENTER,
-                      D3DCOLOR_ARGB(255, 255, 0, 255));
+                      D3DCOLOR_ARGB(255, 128, 0, 255));
 
 	d3dDevice->EndScene();
 	d3dDevice->Present(NULL, NULL, NULL, NULL);
