@@ -125,8 +125,9 @@ MSG Game::Start(void)
 		if(counter > updateInterval)
 		{
 			updates += 1;
-			counter = counter - updateInterval;
-			Update();
+			//counter = counter - updateInterval;
+			Update(counter);
+			counter = 0.0f;
 		}
 
 		Render();
@@ -215,7 +216,7 @@ int Game::Render(void)
 	return TRUE;
 }
 
-int Game::Update(void)
+int Game::Update(double elapsedTime)
 {
 	if(inputHandler->IsKeyDown(VK_ESCAPE))
 		State = QUITTING;

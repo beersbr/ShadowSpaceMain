@@ -33,7 +33,7 @@ public:
 	MSG Start(void);
 
 	int Render();
-	int Update(void);
+	int Update(double elapsedTime);
 	int Cleanup(void);
 
 	int UpdateCamera(void);
