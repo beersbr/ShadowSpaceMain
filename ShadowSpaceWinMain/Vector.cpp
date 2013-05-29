@@ -47,6 +47,21 @@ Vector Vector::rotate(Vector &axis, double angle)
 	return ((t - axis * (axis * t)) * cos(angle)) + (axis.DotProduct(t) * sin(angle)) + (axis * (axis * t));
 }
 
+Vector Vector::inverse(void)
+{
+	return (*this)*-1;
+}
+
+Vector Vector::toUnit(void)
+{
+	Vector t = (*this);
+	t.x /= t.length();
+	t.y /= t.length();
+	t.z /= t.length();
+
+	return t;
+}
+
 double Vector::cos_angle(const Vector &v) const
 {
 	return 0;
@@ -54,5 +69,5 @@ double Vector::cos_angle(const Vector &v) const
 
 double Vector::length() const
 {
-	return sqrt(x*x + y*y);
+	return sqrt(x*x + y*y + z*z);
 }

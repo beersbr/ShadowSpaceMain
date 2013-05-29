@@ -360,13 +360,20 @@ int Game::UpdateCamera(void)
 	}
 	if(inputHandler->IsKeyDown('W'))
 	{
-		cameraPosition.y += 0.1f;
-		cameraLookatPosition.y += 0.1f;
+		Vector t = cameraLookatPosition - cameraPosition;
+		t = t.toUnit();
+		t *= 0.1f;
+		cameraPosition += t;
+		cameraLookatPosition += t;
 	}
 	if(inputHandler->IsKeyDown('S'))
 	{
-		cameraPosition.y -= 0.1f;
-		cameraLookatPosition.y -= 0.1f;
+		Vector t = cameraLookatPosition - cameraPosition;
+		t = t.inverse();
+		t = t.toUnit();
+		t *= 0.1f;
+		cameraPosition += t;
+		cameraLookatPosition += t;
 	}
 
 	if(inputHandler->IsKeyDown(VK_UP))
