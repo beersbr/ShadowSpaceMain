@@ -18,7 +18,7 @@ public:
 	Vector operator*(double d);
 	Vector rotate(Vector &axis, double angle);
 	Vector inverse(void);
-	Vector toUnit(void);
+	Vector unit(void);
 	double cos_angle(const Vector &v) const;
 
 	double length() const;

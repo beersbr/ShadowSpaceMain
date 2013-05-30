@@ -369,7 +369,7 @@ int Game::UpdateCamera(void)
 	if(inputHandler->IsKeyDown('W'))
 	{
 		Vector t = cameraLookatPosition - cameraPosition;
-		t = t.toUnit();
+		t = t.unit();
 		t *= 0.1f;
 		cameraPosition += t;
 		cameraLookatPosition += t;
@@ -378,7 +378,7 @@ int Game::UpdateCamera(void)
 	{
 		Vector t = cameraLookatPosition - cameraPosition;
 		t = t.inverse();
-		t = t.toUnit();
+		t = t.unit();
 		t *= 0.1f;
 		cameraPosition += t;
 		cameraLookatPosition += t;
@@ -397,16 +397,14 @@ int Game::UpdateCamera(void)
 		Vector C = cameraLookatPosition - cameraPosition;
 		Vector d = C.rotate(Vector(0.0f, 1.0f, 0.0f), D3DXToRadian(-1.0f));
 		d = d - C;
-		cameraLookatPosition.x += d.x;
-		cameraLookatPosition.z += d.z;
+		cameraLookatPosition += d;
 	}
 	if(inputHandler->IsKeyDown(VK_RIGHT))
 	{
 		Vector C = cameraLookatPosition - cameraPosition;
 		Vector d = C.rotate(Vector(0.0f, 1.0f, 0.0f), D3DXToRadian(1.0f));
 		d = d - C;
-		cameraLookatPosition.x += d.x;
-		cameraLookatPosition.z += d.z;
+		cameraLookatPosition += d;
 	}
 
 	GetCursorPos(&mousePos);

@@ -52,14 +52,11 @@ Vector Vector::inverse(void)
 	return (*this)*-1;
 }
 
-Vector Vector::toUnit(void)
+Vector Vector::unit(void)
 {
 	Vector t = (*this);
-	t.x /= t.length();
-	t.y /= t.length();
-	t.z /= t.length();
-
-	return t;
+	double len = t.length();
+	return Vector(t.x/len, t.y/len, t.z/len);
 }
 
 double Vector::cos_angle(const Vector &v) const
@@ -69,5 +66,5 @@ double Vector::cos_angle(const Vector &v) const
 
 double Vector::length() const
 {
-	return sqrt(x*x + y*y + z*z);
+	return sqrt((x*x) + (y*y) + (z*z));
 }
