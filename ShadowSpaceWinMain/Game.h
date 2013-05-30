@@ -53,6 +53,9 @@ private:
 	D3DXMATRIX UpdateCameraPole(void);
 	int InitCameraPole(void);
 
+	int InitLight(void);
+	int UpdateLight(void);
+
 private:
 	float index;
 
@@ -79,6 +82,6 @@ private:
 	double elapsedTime;
 
 	bool moveCamera;
-
+	D3DLIGHT9 light;
 };
 

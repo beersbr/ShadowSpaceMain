@@ -37,8 +37,10 @@ int Game::Setup(HWND windowHandle)
 		&d3dpp, 
 		&d3dDevice);
 
-	d3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE); // turn off 3d lighting
+	d3dDevice->SetRenderState(D3DRS_LIGHTING, TRUE); // turn off 3d lighting
 	d3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	d3dDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(60, 60, 60));
+	d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
 	gridSize = 10;
 
@@ -89,6 +91,7 @@ MSG Game::Start(void)
     memcpy(pVoid, vertices, sizeof(vertices));
     vertexBuffer->Unlock();
 
+	InitLight();
 	InitDebugGrid();
 	InitCameraPole();
 
@@ -208,6 +211,7 @@ int Game::Render(void)
 					  DT_LEFT | DT_VCENTER,
                       D3DCOLOR_ARGB(255, 128, 0, 255));
 
+	UpdateLight();
 	d3dDevice->EndScene();
 	d3dDevice->Present(NULL, NULL, NULL, NULL);
 
@@ -229,6 +233,10 @@ int Game::Update(double elapsedTime)
 	if(moveCamera)
 	{
 		UpdateCamera();
+	}
+	else
+	{
+		player->Update(elapsedTime);
 	}
 	
 	return TRUE;
@@ -329,6 +337,37 @@ int Game::InitCameraPole(void)
 	memcpy(pVoid, cameraVertices, sizeof(cameraVertices));
 	cameraPoleBuffer->Unlock();
 	D3DXMatrixIdentity(&cameraPoleIdentityMatrix);
+	return 0;
+}
+
+int Game::InitLight(void)
+{
+	D3DMATERIAL9 material;
+
+	ZeroMemory(&light, sizeof(light));
+	light.Type = D3DLIGHT_DIRECTIONAL;
+	light.Diffuse = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f);
+	light.Direction = D3DXVECTOR3(cameraLookatPosition.x, cameraLookatPosition.y, cameraLookatPosition.z);
+	light.Position = D3DXVECTOR3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
+	ZeroMemory(&material, sizeof(D3DMATERIAL9));    // clear out the struct for use
+    material.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);    // set diffuse color to white
+    material.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);    // set ambient color to white
+
+    d3dDevice->SetLight(0, &light);
+    d3dDevice->LightEnable(0, TRUE); 
+
+	return 0;
+}
+
+int Game::UpdateLight(void)
+{
+	//Vector d = cameraLookatPosition - cameraLookatPosition;
+	//light.Direction = D3DXVECTOR3(d.x, d.y, d.z);
+	light.Direction = D3DXVECTOR3(cameraLookatPosition.x, cameraLookatPosition.y, cameraLookatPosition.z);
+	light.Position = D3DXVECTOR3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
+	d3dDevice->SetLight(0, &light);
 	return 0;
 }
 

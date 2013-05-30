@@ -41,7 +41,7 @@ int Player::InitGeometry(LPDIRECT3DDEVICE9 dev)
 {
 
 	LPD3DXBUFFER bufShipMaterial;
-    D3DXLoadMeshFromX(L"models\\ship.x",    // load this file
+    D3DXLoadMeshFromX(L"models\\ship2.x",    // load this file
                       D3DXMESH_SYSTEMMEM,    // load the mesh into system memory
                       dev,    // the Direct3D Device
                       NULL,    // we aren't using adjacency
