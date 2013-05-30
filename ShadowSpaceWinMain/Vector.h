@@ -16,9 +16,9 @@ public:
 	Vector DotProduct(const Vector &v);
 	double operator*(const Vector &v) const;
 	Vector operator*(double d);
-	Vector rotate(Vector &axis, double angle);
-	Vector inverse(void);
-	Vector unit(void);
+	Vector rotate(Vector &axis, double angle) const;
+	Vector inverse(void) const;
+	Vector unit(void) const;
 	double cos_angle(const Vector &v) const;
 
 	double length() const;

@@ -41,18 +41,19 @@ Vector Vector::operator*(const double d)
 	return Vector(x*d, y*d, z*d);
 }
 
-Vector Vector::rotate(Vector &axis, double angle)
+Vector Vector::rotate(Vector &axis, double angle) const
 {
 	Vector t = (*this);
 	return ((t - axis * (axis * t)) * cos(angle)) + (axis.DotProduct(t) * sin(angle)) + (axis * (axis * t));
 }
 
-Vector Vector::inverse(void)
+Vector Vector::inverse(void) const
 {
-	return (*this)*-1;
+	Vector t = (*this);
+	return (t*-1);
 }
 
-Vector Vector::unit(void)
+Vector Vector::unit(void) const
 {
 	Vector t = (*this);
 	double len = t.length();
