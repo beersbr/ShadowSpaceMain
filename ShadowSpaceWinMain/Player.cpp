@@ -17,6 +17,8 @@ int Player::Update(double timestamp)
 {
 	angle += 180.0f * timestamp/1000.0f;
 
+
+
 	return 0;
 }
 

@@ -11,10 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D41A0D4A-DEF6-4F91-8DAE-D7DB0B390E73}</ProjectGuid>
+    <ProjectGuid>{1A46798B-FD2C-4130-9C8B-B714116CE2A4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ShadowSpaceMain</RootNamespace>
-    <ProjectName>ShadowSpaceAllegro</ProjectName>
+    <RootNamespace>ShadowSpace</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,14 +41,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\ThirdParty\Allegro5\include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\ThirdParty\Allegro5\lib\;$(DXSDK_DIR)Lib\x86\;$(LibraryPath)</LibraryPath>
-    <CustomBuildAfterTargets>Link</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\ThirdParty\Allegro5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\ThirdParty\Allegro5\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -62,13 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>allegro.lib;allegro_main.lib;allegro_audio.lib;allegro_acodec.lib;allegro_ttf.lib;allegro_color.lib;allegro_dialog.lib;allegro_font.lib;allegro_image.lib;allegro_memfile.lib;allegro_primitives.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <CustomBuildStep>
-      <Command>copy $(ProjectDir)..\ThirdParty\Allegro5\lib\*.dll $(OutDir)</Command>
-      <Message>Moving dlls</Message>
-      <Outputs>*.dll</Outputs>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -85,33 +73,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>allegro.lib;allegro_main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <CustomBuildStep>
-      <Command>copy $(ProjectDir)..\ThirdParty\Allegro5\lib\*.dll .\</Command>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="HighResTimer.h" />
-    <ClInclude Include="IGameObject.h" />
-    <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Point.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Vector.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="HighResTimer.cpp" />
-    <ClCompile Include="IGameObject.cpp" />
-    <ClCompile Include="InputHandler.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Point.cpp" />
-    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

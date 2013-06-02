@@ -13,6 +13,10 @@ public:
 	int Draw(LPDIRECT3DDEVICE9 dev);
 	int InitGeometry(LPDIRECT3DDEVICE9 dev);
 
+public:
+	Vector lookatDirection;
+
+
 private:
 	LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
 	LPDIRECT3DINDEXBUFFER9 indexBuffer;

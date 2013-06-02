@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShadowSpaceMain", "ShadowSpaceMain\ShadowSpaceMain.vcxproj", "{D41A0D4A-DEF6-4F91-8DAE-D7DB0B390E73}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShadowSpaceAllegro", "ShadowSpaceMain\ShadowSpaceMain.vcxproj", "{D41A0D4A-DEF6-4F91-8DAE-D7DB0B390E73}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShadowSpaceWinMain", "ShadowSpaceWinMain\ShadowSpaceWinMain.vcxproj", "{48F1EC73-F25C-4767-B0A3-4CF57B95EE03}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3DProgSandbox", "ShadowSpaceWinMain\ShadowSpaceWinMain.vcxproj", "{48F1EC73-F25C-4767-B0A3-4CF57B95EE03}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShadowSpace", "ShadowSpace\ShadowSpace.vcxproj", "{1A46798B-FD2C-4130-9C8B-B714116CE2A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,10 @@ Global
 		{48F1EC73-F25C-4767-B0A3-4CF57B95EE03}.Debug|Win32.Build.0 = Debug|Win32
 		{48F1EC73-F25C-4767-B0A3-4CF57B95EE03}.Release|Win32.ActiveCfg = Release|Win32
 		{48F1EC73-F25C-4767-B0A3-4CF57B95EE03}.Release|Win32.Build.0 = Release|Win32
+		{1A46798B-FD2C-4130-9C8B-B714116CE2A4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1A46798B-FD2C-4130-9C8B-B714116CE2A4}.Debug|Win32.Build.0 = Debug|Win32
+		{1A46798B-FD2C-4130-9C8B-B714116CE2A4}.Release|Win32.ActiveCfg = Release|Win32
+		{1A46798B-FD2C-4130-9C8B-B714116CE2A4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
